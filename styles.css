@@ -1,0 +1,51 @@
+/* Global Dark Theme Styles */
+body {
+    background-color: #121212;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Container Styling */
+.container {
+    background-color: #1e1e1e;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+
+/* Input & Button Styling */
+input, .btn {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+}
+
+input {
+    background-color: #333;
+    color: #fff;
+}
+
+.btn {
+    background-color: #6200ea;
+    color: #fff;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #3700b3;
+}
+
+/* Links */
+a {
+    color: #bb86fc;
+}
