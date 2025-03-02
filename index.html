@@ -3,47 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Votronix - AI Voice Generator</title>
+    <title>Votronix - AI Music Generator</title>
     <link rel="stylesheet" href="styles.css">
-    <script defer src="script.js"></script>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+        input, .btn {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+        input {
+            background-color: #333;
+            color: #fff;
+        }
+        .btn {
+            background-color: #6200ea;
+            color: #fff;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #3700b3;
+        }
+        a {
+            color: #bb86fc;
+        }
+    </style>
 </head>
 <body>
-    <div class="login-container" id="login-page">
+    <div class="container">
         <h1>Votronix</h1>
         <p>Sign in to access features</p>
-        <input type="email" id="login-email" placeholder="Email">
-        <input type="password" id="login-password" placeholder="Password">
-        <button onclick="login()">Sign In</button>
+        <input type="email" id="login-email" placeholder="Email" required>
+        <input type="password" id="login-password" placeholder="Password" required>
+        <button class="btn" onclick="login()">Sign In</button>
         <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
     </div>
-    
-    <div class="signup-container" id="signup-page" style="display:none;">
-        <h1>Sign Up</h1>
-        <input type="text" id="signup-username" placeholder="Username">
-        <input type="email" id="signup-email" placeholder="Email">
-        <input type="password" id="signup-password" placeholder="Create Password">
-        <button onclick="signup()">Create Account</button>
-        <p>Already have an account? <a href="index.html">Sign In</a></p>
-    </div>
-    
-    <div class="dashboard" id="dashboard" style="display:none;">
-        <header>
-            <h1>Welcome to Votronix</h1>
-            <button onclick="logout()">Logout</button>
-        </header>
-        <nav>
-            <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
-            <ul id="sidebar" class="hidden">
-                <li><a href="profile.html">Profile</a></li>
-                <li><a href="#">Downloads</a></li>
-                <li><a href="#">Settings</a></li>
-            </ul>
-        </nav>
-        <main>
-            <p>Features are currently under development. Stay tuned!</p>
-        </main>
-    </div>
-    
-    <script src="script.js"></script>
+    <script defer src="script.js"></script>
 </body>
 </html>
