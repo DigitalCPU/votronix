@@ -1,25 +1,37 @@
 // ✅ Signup Function
-async function signup() {
-    let username = document.getElementById("signup-username").value;
-    let email = document.getElementById("signup-email").value;
-    let password = document.getElementById("signup-password").value;
+async function login() {
+    let email = document.getElementById("login-email").value.trim();
+    let password = document.getElementById("login-password").value.trim();
 
-    let response = await fetch("https://votronix-backend.onrender.com/signup", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ username, email, password })
-    });
+    if (!email || !password) {
+        alert("Please enter both email and password.");
+        return;
+    }
 
-    let data = await response.json();
-    if (response.ok) {
-        alert("Signup successful! You can now log in.");
-        window.location.href = "login.html"; // Redirect to login page
-    } else {
-        alert("Error: " + data.message);
+    try {
+        let response = await fetch("https://votronix-backend.onrender.com/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ email: email, password: password })
+        });
+
+        let data = await response.json();
+        if (response.ok) {
+            localStorage.setItem("token", data.token);
+            alert("Login successful!");
+            window.location.href = "profile.html"; // Redirect to profile page
+        } else {
+            console.error("Login failed:", data);
+            alert("Login failed: " + (data.message || "Unknown error"));
+        }
+    } catch (error) {
+        console.error("Login error:", error);
+        alert("An error occurred while logging in.");
     }
 }
+
 
 // ✅ Login Function
 async function login() {
