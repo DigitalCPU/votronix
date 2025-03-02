@@ -1,3 +1,50 @@
+// ✅ Signup Function
+async function signup() {
+    let username = document.getElementById("signup-username").value;
+    let email = document.getElementById("signup-email").value;
+    let password = document.getElementById("signup-password").value;
+
+    let response = await fetch("https://votronix-backend.onrender.com/signup", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username, email, password })
+    });
+
+    let data = await response.json();
+    if (response.ok) {
+        alert("Signup successful! You can now log in.");
+        window.location.href = "login.html"; // Redirect to login page
+    } else {
+        alert("Error: " + data.message);
+    }
+}
+
+// ✅ Login Function
+async function login() {
+    let email = document.getElementById("login-email").value;
+    let password = document.getElementById("login-password").value;
+
+    let response = await fetch("https://votronix-backend.onrender.com/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password })
+    });
+
+    let data = await response.json();
+    if (response.ok) {
+        localStorage.setItem("token", data.token);
+        alert("Login successful!");
+        window.location.href = "profile.html"; // Redirect to profile page
+    } else {
+        alert("Error: " + data.message);
+    }
+}
+
+// ✅ Load Profile Function
 async function loadProfile() {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -10,7 +57,7 @@ async function loadProfile() {
         const response = await fetch("https://votronix-backend.onrender.com/profile", {
             method: "GET",
             headers: {
-                "Authorization": token
+                "Authorization": `Bearer ${token}`
             }
         });
 
