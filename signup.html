@@ -5,16 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - Votronix</title>
     <link rel="stylesheet" href="styles.css">
-    <script defer src="script.js"></script>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+        input, .btn {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+        input {
+            background-color: #333;
+            color: #fff;
+        }
+        .btn {
+            background-color: #6200ea;
+            color: #fff;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #3700b3;
+        }
+        a {
+            color: #bb86fc;
+        }
+    </style>
 </head>
 <body>
-    <div class="signup-container">
+    <div class="container">
         <h1>Create an Account</h1>
         <input type="text" id="signup-username" placeholder="Username" required>
         <input type="email" id="signup-email" placeholder="Email" required>
         <input type="password" id="signup-password" placeholder="Create Password" required>
-        <button onclick="signup()">Sign Up</button>
-        <p>Already have an account? <a href="login.html">Sign In</a></p>
+        <button class="btn" onclick="signup()">Sign Up</button>
+        <p>Already have an account? <a href="index.html">Sign In</a></p>
     </div>
+    <script defer src="script.js"></script>
 </body>
 </html>
