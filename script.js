@@ -8,19 +8,17 @@ async function signup() {
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-            username,
-            email,
-            password
-        })
+        body: JSON.stringify({ username, email, password })
     });
 
-    const data = await response.json();
-
-    if (response.ok) {
-        alert("✅ Account created successfully! Redirecting to login...");
-        window.location.href = "index.html"; // Redirect to login page
-    } else {
-        alert(`❌ Error: ${data.message}`);
+    if (!response.ok) {
+        const errorData = await response.text();
+        console.error("Server response:", errorData); // Log full server response
+        alert(`❌ Error: ${response.status} - ${errorData}`);
+        return;
     }
+
+    const data = await response.json();
+    alert("✅ Account created successfully!");
+    window.location.href = "index.html"; // Redirect after signup
 }
