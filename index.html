@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="styles.css">
     <style>
         body {
-            background-color: #121212;
+            background: url('https://digitalcpu.github.io/Cyclonex/votronix%20001.svg') no-repeat center center fixed;
+            background-size: cover;
             color: #ffffff;
             font-family: Arial, sans-serif;
             margin: 0;
@@ -16,13 +17,19 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            flex-direction: column;
         }
         .container {
-            background-color: #1e1e1e;
+            background-color: rgba(30, 30, 30, 0.85);
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
         }
         input, .btn {
             display: block;
@@ -31,6 +38,7 @@
             padding: 10px;
             border-radius: 5px;
             border: none;
+            text-align: center;
         }
         input {
             background-color: #333;
@@ -47,6 +55,20 @@
         a {
             color: #bb86fc;
         }
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .footer a {
+            color: #00bfff;
+            font-weight: bold;
+            text-shadow: 0 0 10px #00bfff, 0 0 20px #00bfff;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        .footer a:hover {
+            text-shadow: 0 0 15px #00bfff, 0 0 25px #00bfff;
+        }
     </style>
 </head>
 <body>
@@ -57,6 +79,9 @@
         <input type="password" id="login-password" placeholder="Password" required>
         <button class="btn" onclick="login()">Sign In</button>
         <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
+    </div>
+    <div class="footer">
+        <p><a href="https://digitalcpu.github.io/Cyclonex/" target="_blank">CycloNex</a></p>
     </div>
     <script defer src="script.js"></script>
 </body>
