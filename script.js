@@ -3,12 +3,18 @@ async function signup() {
     const email = document.getElementById("signup-email").value;
     const password = document.getElementById("signup-password").value;
 
-    const response = await fetch("https://votronix-backend.onrender.com/auth/register", {
+    const backendURL = "https://votronix-backend.onrender.com"; // Ensure this is correct
+
+    const response = await fetch(`${backendURL}/auth/register`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ username, email, password })
+        body: JSON.stringify({
+            username,
+            email,
+            password
+        })
     });
 
     if (!response.ok) {
