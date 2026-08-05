@@ -70,6 +70,24 @@
           <div class="waveform" id="waveform">
             <span>Waveform appears after audio is loaded</span>
           </div>
+          <div class="transport-console">
+            <audio id="audio-preview" preload="metadata"></audio>
+            <div class="transport-buttons" aria-label="Playback controls">
+              <button id="previous-track" title="Previous">|&lt;</button>
+              <button id="reverse-audio" title="Reverse">-10s</button>
+              <button id="play-audio" title="Play">Play</button>
+              <button id="pause-audio" title="Pause">Pause</button>
+              <button id="stop-audio" title="Stop">Stop</button>
+              <button id="record-audio" title="Record">Record</button>
+              <button id="forward-audio" title="Fast forward">+10s</button>
+              <button id="next-track" title="Next">&gt;|</button>
+            </div>
+            <div class="transport-timeline">
+              <span id="time-current">0:00</span>
+              <input id="transport-seek" type="range" min="0" max="1000" value="0" />
+              <span id="time-duration">0:00</span>
+            </div>
+          </div>
           <div class="button-row">
             <button id="export-audio">Export processed WAV</button>
             <button id="refresh-status">Refresh</button>

@@ -257,6 +257,46 @@ main {
   background: var(--accent);
 }
 
+.transport-console {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #111518;
+}
+
+.transport-buttons {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(58px, 1fr));
+  gap: 8px;
+}
+
+.transport-buttons button {
+  min-width: 0;
+  padding: 0 8px;
+  white-space: nowrap;
+}
+
+.transport-buttons button.recording {
+  border-color: var(--danger);
+  background: #3a171a;
+}
+
+.transport-timeline {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) 52px;
+  gap: 10px;
+  align-items: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.transport-timeline input {
+  padding: 0;
+}
+
 .split-layout {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -340,7 +380,8 @@ pre {
   .status-grid,
   .split-layout,
   .topbar,
-  .api-box {
+  .api-box,
+  .transport-buttons {
     grid-template-columns: 1fr;
   }
 

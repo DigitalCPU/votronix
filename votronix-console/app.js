@@ -2,6 +2,8 @@ const state = {
   apiBase: localStorage.getItem("votronixApiBase") || "http://127.0.0.1:8765",
   effects: [],
   chain: [],
+  recorder: null,
+  recordChunks: [],
 };
 
 const $ = (id) => document.getElementById(id);
@@ -69,8 +71,24 @@ async function loadStatus() {
   $("sample-rate").textContent = `${status.sample_rate || 0} Hz`;
   $("channels").textContent = status.channels || 0;
   $("effect-count").textContent = status.effects_in_chain || 0;
+  updateAudioPreview(status.source_loaded);
   await loadChain();
   await loadWaveform();
+}
+
+function updateAudioPreview(sourceLoaded) {
+  const audio = $("audio-preview");
+  if (!sourceLoaded) {
+    audio.removeAttribute("src");
+    audio.load();
+    updateTransportTime();
+    return;
+  }
+  const nextSrc = apiUrl(`/api/audio/processed.wav?t=${Date.now()}`);
+  if (audio.src !== nextSrc) {
+    audio.src = nextSrc;
+    audio.load();
+  }
 }
 
 async function loadEffects() {
@@ -216,6 +234,7 @@ function bindEvents() {
   });
 
   $("refresh-status").addEventListener("click", refreshAll);
+  bindTransportEvents();
   $("effect-select").addEventListener("change", renderEffectParams);
   $("effect-params").addEventListener("input", (event) => {
     if (!event.target.dataset.param) return;
@@ -311,6 +330,159 @@ function bindEvents() {
     toast("Project loaded");
     await refreshAll();
   });
+}
+
+function bindTransportEvents() {
+  const audio = $("audio-preview");
+  const seek = $("transport-seek");
+
+  $("play-audio").addEventListener("click", async () => {
+    if (!audio.src) {
+      toast("Import a WAV before playback");
+      return;
+    }
+    await audio.play();
+  });
+
+  $("pause-audio").addEventListener("click", () => audio.pause());
+
+  $("stop-audio").addEventListener("click", () => {
+    audio.pause();
+    audio.currentTime = 0;
+    updateTransportTime();
+  });
+
+  $("reverse-audio").addEventListener("click", () => {
+    audio.currentTime = Math.max(0, audio.currentTime - 10);
+  });
+
+  $("forward-audio").addEventListener("click", () => {
+    audio.currentTime = Math.min(audio.duration || audio.currentTime + 10, audio.currentTime + 10);
+  });
+
+  $("previous-track").addEventListener("click", () => {
+    audio.currentTime = 0;
+  });
+
+  $("next-track").addEventListener("click", () => {
+    if (Number.isFinite(audio.duration)) {
+      audio.currentTime = Math.max(0, audio.duration - 0.05);
+    }
+  });
+
+  $("record-audio").addEventListener("click", toggleRecording);
+
+  seek.addEventListener("input", () => {
+    if (!Number.isFinite(audio.duration) || audio.duration <= 0) return;
+    audio.currentTime = (Number(seek.value) / 1000) * audio.duration;
+  });
+
+  audio.addEventListener("timeupdate", updateTransportTime);
+  audio.addEventListener("loadedmetadata", updateTransportTime);
+  audio.addEventListener("ended", updateTransportTime);
+}
+
+function updateTransportTime() {
+  const audio = $("audio-preview");
+  const duration = Number.isFinite(audio.duration) ? audio.duration : 0;
+  $("time-current").textContent = formatTime(audio.currentTime || 0);
+  $("time-duration").textContent = formatTime(duration);
+  $("transport-seek").value = duration > 0 ? Math.round(((audio.currentTime || 0) / duration) * 1000) : 0;
+}
+
+function formatTime(seconds) {
+  const safeSeconds = Math.max(0, Math.floor(seconds || 0));
+  const minutes = Math.floor(safeSeconds / 60);
+  const remainder = String(safeSeconds % 60).padStart(2, "0");
+  return `${minutes}:${remainder}`;
+}
+
+async function toggleRecording() {
+  const button = $("record-audio");
+  if (state.recorder && state.recorder.state === "recording") {
+    state.recorder.stop();
+    button.classList.remove("recording");
+    button.textContent = "Record";
+    return;
+  }
+  if (!navigator.mediaDevices || !window.MediaRecorder) {
+    toast("Browser recording is not available here");
+    return;
+  }
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  state.recordChunks = [];
+  state.recorder = new MediaRecorder(stream);
+  state.recorder.addEventListener("dataavailable", (event) => {
+    if (event.data.size > 0) state.recordChunks.push(event.data);
+  });
+  state.recorder.addEventListener("stop", async () => {
+    stream.getTracks().forEach((track) => track.stop());
+    try {
+      const sourceBlob = new Blob(state.recordChunks, { type: state.recorder.mimeType });
+      const wavBlob = await mediaBlobToWav(sourceBlob);
+      const formData = new FormData();
+      formData.append("audio", wavBlob, `recording-${Date.now()}.wav`);
+      const payload = await upload("/api/audio/upload", formData);
+      toast(`Recorded ${payload.path}`);
+      await loadStatus();
+    } catch (error) {
+      toast(error.message);
+    }
+  });
+  state.recorder.start();
+  button.classList.add("recording");
+  button.textContent = "Stop Rec";
+  toast("Recording started");
+}
+
+async function mediaBlobToWav(blob) {
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextClass) {
+    throw new Error("This browser cannot convert recordings to WAV.");
+  }
+  const context = new AudioContextClass();
+  const arrayBuffer = await blob.arrayBuffer();
+  const audioBuffer = await context.decodeAudioData(arrayBuffer);
+  const wav = encodeWav(audioBuffer);
+  await context.close();
+  return new Blob([wav], { type: "audio/wav" });
+}
+
+function encodeWav(audioBuffer) {
+  const channels = audioBuffer.numberOfChannels;
+  const sampleRate = audioBuffer.sampleRate;
+  const frameCount = audioBuffer.length;
+  const dataBytes = frameCount * channels * 2;
+  const buffer = new ArrayBuffer(44 + dataBytes);
+  const view = new DataView(buffer);
+  writeString(view, 0, "RIFF");
+  view.setUint32(4, 36 + dataBytes, true);
+  writeString(view, 8, "WAVE");
+  writeString(view, 12, "fmt ");
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, channels, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * channels * 2, true);
+  view.setUint16(32, channels * 2, true);
+  view.setUint16(34, 16, true);
+  writeString(view, 36, "data");
+  view.setUint32(40, dataBytes, true);
+  let offset = 44;
+  for (let frame = 0; frame < frameCount; frame += 1) {
+    for (let channel = 0; channel < channels; channel += 1) {
+      const sample = Math.max(-1, Math.min(1, audioBuffer.getChannelData(channel)[frame]));
+      view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7fff, true);
+      offset += 2;
+    }
+  }
+  return buffer;
+}
+
+function writeString(view, offset, text) {
+  for (let index = 0; index < text.length; index += 1) {
+    view.setUint8(offset + index, text.charCodeAt(index));
+  }
 }
 
 function escapeHtml(value) {
