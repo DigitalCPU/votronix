@@ -30,6 +30,15 @@ function post(path, payload = {}) {
   return api(path, { method: "POST", body: JSON.stringify(payload) });
 }
 
+async function upload(path, formData) {
+  const response = await fetch(apiUrl(path), { method: "POST", body: formData });
+  const payload = await response.json();
+  if (!response.ok || payload.ok === false) {
+    throw new Error(payload.error || `Upload failed: ${response.status}`);
+  }
+  return payload;
+}
+
 function toast(message) {
   const node = $("toast");
   node.textContent = message;
@@ -217,6 +226,19 @@ function bindEvents() {
   $("load-audio").addEventListener("click", async () => {
     await post("/api/audio/load", { path: $("audio-path").value.trim() });
     toast("Audio loaded");
+    await loadStatus();
+  });
+
+  $("upload-audio").addEventListener("click", async () => {
+    const file = $("audio-file").files[0];
+    if (!file) {
+      toast("Choose a WAV file first");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("audio", file);
+    const payload = await upload("/api/audio/upload", formData);
+    toast(`Imported ${payload.path}`);
     await loadStatus();
   });
 

@@ -58,6 +58,11 @@
 
         <section class="work-surface">
           <div class="form-row">
+            <label for="audio-file">Choose WAV from this device</label>
+            <input id="audio-file" type="file" accept=".wav,audio/wav,audio/wave" />
+            <button id="upload-audio">Import</button>
+          </div>
+          <div class="form-row">
             <label for="audio-path">WAV path on this laptop</label>
             <input id="audio-path" placeholder="C:\Users\inter\Desktop\voice.wav" />
             <button id="load-audio">Load</button>
