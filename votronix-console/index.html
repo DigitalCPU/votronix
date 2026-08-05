@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Votronix Web Console</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="brand-mark">VX</div>
+      <h1>Votronix</h1>
+      <nav>
+        <button data-panel="studio" class="active">Studio</button>
+        <button data-panel="effects">Effects</button>
+        <button data-panel="speech">Speech</button>
+        <button data-panel="projects">Projects</button>
+        <button data-panel="settings">Settings</button>
+      </nav>
+      <div class="connection">
+        <span id="connection-dot"></span>
+        <span id="connection-text">Checking localhost</span>
+      </div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Local Python bridge</p>
+          <h2 id="project-title">Untitled Project</h2>
+        </div>
+        <div class="api-box">
+          <label for="api-base">API</label>
+          <input id="api-base" value="http://127.0.0.1:8765" />
+          <button id="save-api">Save</button>
+        </div>
+      </header>
+
+      <section id="studio" class="panel active">
+        <div class="status-grid">
+          <article>
+            <span>Source</span>
+            <strong id="source-state">No audio</strong>
+          </article>
+          <article>
+            <span>Sample Rate</span>
+            <strong id="sample-rate">0 Hz</strong>
+          </article>
+          <article>
+            <span>Channels</span>
+            <strong id="channels">0</strong>
+          </article>
+          <article>
+            <span>Effects</span>
+            <strong id="effect-count">0</strong>
+          </article>
+        </div>
+
+        <section class="work-surface">
+          <div class="form-row">
+            <label for="audio-path">WAV path on this laptop</label>
+            <input id="audio-path" placeholder="C:\Users\inter\Desktop\voice.wav" />
+            <button id="load-audio">Load</button>
+          </div>
+          <div class="waveform" id="waveform">
+            <span>Waveform appears after audio is loaded</span>
+          </div>
+          <div class="button-row">
+            <button id="export-audio">Export processed WAV</button>
+            <button id="refresh-status">Refresh</button>
+          </div>
+        </section>
+      </section>
+
+      <section id="effects" class="panel">
+        <div class="split-layout">
+          <section class="work-surface">
+            <h3>Available Effects</h3>
+            <div class="form-row">
+              <select id="effect-select"></select>
+              <button id="add-effect">Add</button>
+            </div>
+            <div id="effect-params" class="param-list"></div>
+          </section>
+          <section class="work-surface">
+            <h3>Active Chain</h3>
+            <div id="chain-list" class="chain-list"></div>
+            <div class="button-row">
+              <button id="clear-chain">Clear Chain</button>
+            </div>
+          </section>
+        </div>
+        <section class="work-surface">
+          <h3>AI Voice Designer</h3>
+          <div class="form-row">
+            <input id="ai-prompt" placeholder="Make it sound like a clean radio announcer with light reverb" />
+            <button id="infer-effects">Apply</button>
+          </div>
+        </section>
+      </section>
+
+      <section id="speech" class="panel">
+        <div class="split-layout">
+          <section class="work-surface">
+            <h3>Text To Speech</h3>
+            <label for="tts-provider">Provider</label>
+            <select id="tts-provider"></select>
+            <label for="tts-text">Text</label>
+            <textarea id="tts-text" rows="7" placeholder="Type speech to synthesize"></textarea>
+            <button id="run-tts">Generate Speech</button>
+          </section>
+          <section class="work-surface">
+            <h3>Speech To Text</h3>
+            <label for="stt-provider">Provider</label>
+            <select id="stt-provider"></select>
+            <button id="run-stt">Transcribe Loaded Audio</button>
+            <pre id="transcript-output">Transcript output</pre>
+          </section>
+        </div>
+      </section>
+
+      <section id="projects" class="panel">
+        <section class="work-surface">
+          <h3>Projects</h3>
+          <div class="form-row">
+            <input id="new-project-name" placeholder="Project name" />
+            <button id="new-project">New</button>
+            <button id="save-project">Save</button>
+            <button id="reload-projects">Reload</button>
+          </div>
+          <div id="project-list" class="project-list"></div>
+        </section>
+      </section>
+
+      <section id="settings" class="panel">
+        <section class="work-surface">
+          <h3>Settings</h3>
+          <pre id="settings-output">Loading settings</pre>
+        </section>
+      </section>
+
+      <div id="toast" role="status"></div>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
